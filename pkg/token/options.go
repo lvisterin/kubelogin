@@ -39,6 +39,7 @@ const (
 	envROPCUsername                 = "AAD_USER_PRINCIPAL_NAME"
 	envROPCPassword                 = "AAD_USER_PRINCIPAL_PASSWORD"
 	envLoginMethod                  = "AAD_LOGIN_METHOD"
+	envTenantID                     = "AAD_TENANT_ID"
 )
 
 var supportedLogin []string
@@ -67,7 +68,7 @@ func (o *Options) AddFlags(fs *pflag.FlagSet) {
 	fs.StringVar(&o.Password, "password", o.Password, fmt.Sprintf("password for ropc login flow. It may be specified in %s environment variable", envROPCPassword))
 	fs.StringVar(&o.IdentityResourceId, "identity-resource-id", o.IdentityResourceId, "Managed Identity resource id.")
 	fs.StringVar(&o.ServerID, "server-id", o.ServerID, "AAD server application ID")
-	fs.StringVarP(&o.TenantID, "tenant-id", "t", o.TenantID, "AAD tenant ID")
+	fs.StringVarP(&o.TenantID, "tenant-id", "t", o.TenantID, fmt.Sprintf("AAD tenant ID. It may be specified in %s environment variable", envTenantID))
 	fs.StringVarP(&o.Environment, "environment", "e", o.Environment, "Azure environment name")
 	fs.BoolVar(&o.IsLegacy, "legacy", o.IsLegacy, "set to true to get token with 'spn:' prefix in audience claim")
 }
@@ -104,6 +105,9 @@ func (o *Options) UpdateFromEnv() {
 	}
 	if v, ok := os.LookupEnv(envLoginMethod); ok {
 		o.LoginMethod = v
+	}
+	if v, ok := os.LookupEnv(envTenantID); ok {
+		o.TenantID = v
 	}
 }
 
